@@ -1,0 +1,45 @@
+{{ define "title" }}Authentication{{ end }}
+
+{{ define "content" }}
+<div class="card">
+  <h1>Welcome</h1>
+
+  {{ if eq .Step "email" }}
+    <form method="post" action="{{ .PostEmailURL }}">
+      <label>Email</label>
+      <input
+        type="email"
+        name="email"
+        placeholder="type your email"
+        required
+      />
+      <button type="submit">Continue</button>
+    </form>
+  {{ end }}
+
+  {{ if eq .Step "password" }}
+    <form method="post" action="{{ .PostPasswordURL }}">
+      <p class="muted">Email: {{ .Email }}</p>
+      <label>Password</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="type your password"
+        required
+      />
+      <button type="submit">Log in</button>
+    </form>
+  {{ end }}
+
+  {{ if eq .Step "signup" }}
+    <p>We sent you a confirmation link.</p>
+    <p class="muted">Check your email to complete sign up.</p>
+  {{ end }}
+
+  {{ if .Error }}
+    <p class="error">{{ .Error }}</p>
+  {{ end }}
+</div>
+{{ end }}
+
+{{ template "base" . }}

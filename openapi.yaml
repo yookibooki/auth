@@ -1,0 +1,379 @@
+openapi: 3.0.3
+info:
+  title: Auth Service API
+  version: 1.0.0
+  description: Authentication and account management service
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+
+paths:
+  /auth:
+    get:
+      summary: Render authentication page
+      tags:
+        - Authentication
+      parameters:
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+        - name: client_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: response_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [code]
+            default: code
+      responses:
+        '200':
+          description: HTML page rendered
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /auth/email:
+    post:
+      summary: Submit email for login/signup
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                redirect_uri:
+                  type: string
+                  format: uri
+                client_id:
+                  type: string
+                state:
+                  type: string
+      responses:
+        '200':
+          description: Email processed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid request
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /auth/password:
+    post:
+      summary: Submit password for login/signup
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                redirect_uri:
+                  type: string
+                  format: uri
+                client_id:
+                  type: string
+                state:
+                  type: string
+      responses:
+        '200':
+          description: Password processed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid request
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /auth/confirm:
+    get:
+      summary: Confirm email address
+      tags:
+        - Authentication
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Email confirmed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid or expired code
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /reset:
+    get:
+      summary: Render password reset request page
+      tags:
+        - Password Reset
+      responses:
+        '200':
+          description: HTML page rendered
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /reset/request:
+    post:
+      summary: Request password reset
+      tags:
+        - Password Reset
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Password reset email sent
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /reset/confirm:
+    get:
+      summary: Render password reset confirmation page
+      tags:
+        - Password Reset
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: HTML page rendered
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid or expired token
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /reset/complete:
+    post:
+      summary: Complete password reset
+      tags:
+        - Password Reset
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - token
+                - password
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid request
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /account:
+    get:
+      summary: Render account management page
+      tags:
+        - Account
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: HTML page rendered
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /account/email:
+    post:
+      summary: Change email address
+      tags:
+        - Account
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Email change initiated
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid request
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /account/password:
+    post:
+      summary: Change password
+      tags:
+        - Account
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid request
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /account/delete:
+    post:
+      summary: Delete account
+      tags:
+        - Account
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Account deleted successfully
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            text/html:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: session

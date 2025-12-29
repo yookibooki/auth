@@ -1,0 +1,17 @@
+# Reference -> https://raw.githubusercontent.com/golangci/golangci-lint/70dca3d19f6495e126f9124bdc4999df965c57a9/.golangci.reference.yml
+# Docs -> https://golangci-lint.run/docs/configuration/file/
+
+version: "2"
+linters:
+  default: none
+#   enable:
+#     - value
+#   disable:
+#     - value
+# formatters:
+# default: []
+#   enable:
+#     - value
+#   disable:
+#     - value
+#   settings:

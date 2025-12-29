@@ -1,0 +1,39 @@
+{{ define "title" }}Account{{ end }}
+
+{{ define "content" }}
+<div class="card">
+  <h1>Account</h1>
+
+  {{ if .Message }}
+    <p class="muted">{{ .Message }}</p>
+  {{ end }}
+  {{ if .Error }}
+    <p class="error">{{ .Error }}</p>
+  {{ end }}
+
+  <div class="section">
+    <form method="post" action="{{ .ChangeEmailURL }}">
+      <label>New email</label>
+      <input type="email" name="email" required />
+      <button type="submit">Change email</button>
+    </form>
+  </div>
+
+  <div class="section">
+    <form method="post" action="{{ .ChangePasswordURL }}">
+      <label>New password</label>
+      <input type="password" name="password" required />
+      <button type="submit">Change password</button>
+    </form>
+  </div>
+
+  <div class="section danger">
+    <form method="post" action="{{ .DeleteAccountURL }}"
+          onsubmit="return confirm('Delete account permanently?');">
+      <button type="submit">Delete account</button>
+    </form>
+  </div>
+</div>
+{{ end }}
+
+{{ template "base" . }}
